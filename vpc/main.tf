@@ -22,11 +22,11 @@ resource "aws_subnet" "eks_public_subnets" {
   count                   = var.public_sn_count
   vpc_id                  = aws_vpc.eks_vpc.id
   cidr_block              = var.public_cidrs[count.index]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = var.map_public_ip_on_launch
   availability_zone       = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name = "eks_public_subnet_${count.index + 1}"
+    Name = "eks_public_subnets_${count.index + 1}"
   }
 }
 
@@ -42,7 +42,7 @@ resource "aws_route_table" "public_rt" {
 #Associate public subnets with routing table
 resource "aws_route_table_association" "Public_assoc" {
   count          = var.public_sn_count
-  subnet_ids      = aws_subnet.eks_public_subnets[*].id[count.index]
+  subnet_id     = aws_subnet.eks_public_subnets.*.id[count.index]
   route_table_id = aws_route_table.public_rt.id
 }
 
