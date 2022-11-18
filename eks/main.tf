@@ -71,40 +71,39 @@ resource "aws_iam_role_policy_attachment" "luit-node-AmazonEC2ContainerRegistryR
 # EKS Cluster
 
 resource "random_string" "random" {
-  length           = 5
-  special          = true
+  length  = 5
+  special = true
 }
 
 resource "aws_eks_cluster" "wk22_cluster" {
-  name     = var.cluster_name
+  name     = "Wk22-cluster-${random_string.random.id}"
   role_arn = aws_iam_role.project_cluster.arn
 
   vpc_config {
-    security_group_ids = [aws_security_group.eks_sg.id]
-    subnet_ids = aws_subnet.eks_public_subnets[*].id[count.index]
+    security_group_ids      = [aws_security_group.eks_sg.id]
+    subnet_ids              = var.public_subnets
+    endpoint_public_access  = var.endpoint_public_access
+    endpoint_private_access = var.endpoint_private_access
   }
 
   depends_on = [
     aws_iam_role_policy_attachment.luit-AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.luit-AmazonEKSVPCResourceController,
   ]
-  
-  tags = {
-    Name = "Week21_vpc-${random_string.random.id}"
 }
 
 #EKS-worker-nodes
 
 resource "aws_eks_node_group" "wk22_node" {
-  cluster_name    = var.cluster_name
-  node_group_name = "demo"
+  cluster_name    = aws_eks_cluster.wk22_cluster.name
+  node_group_name = "worker_nodes"
   node_role_arn   = aws_iam_role.project_node.arn
-  subnet_ids      = aws_subnet.eks_public_subnets[*].id
+  subnet_ids      = var.public_subnets
 
   scaling_config {
-    desired_size = 2
-    max_size     = 2
-    min_size     = 1
+    desired_size = var.desired_size
+    max_size     = var.max_size
+    min_size     = var.min_size
   }
 
   depends_on = [
@@ -118,14 +117,14 @@ resource "aws_eks_node_group" "wk22_node" {
 # eks security group
 resource "aws_security_group" "eks_sg" {
   name        = "tf_eks_cluster_sg"
-  description = ""
+  description = "Communication with cluster API server & cluster communication with worker nodes"
   vpc_id      = var.vpc_id
 
-ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    security_group_id = [aws_security_group.eks_sg.id]
+  ingress {
+    from_port         = 80
+    to_port           = 80
+    protocol          = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -134,7 +133,7 @@ ingress {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   tags = {
     Name = "tf_eks_cluster_sg"
   }
