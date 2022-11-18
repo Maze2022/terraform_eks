@@ -11,3 +11,7 @@ variable "public_cidrs" {
 variable "public_sn_count" {
   type = number
 }
+
+variable "map_public_ip_on_launch" {
+  type = string
+}
