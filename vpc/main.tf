@@ -42,7 +42,7 @@ resource "aws_route_table" "public_rt" {
 #Associate public subnets with routing table
 resource "aws_route_table_association" "Public_assoc" {
   count          = var.public_sn_count
-  subnet_id     = aws_subnet.eks_public_subnets.*.id[count.index]
+  subnet_id      = aws_subnet.eks_public_subnets.*.id[count.index]
   route_table_id = aws_route_table.public_rt.id
 }
 
