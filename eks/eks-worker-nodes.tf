@@ -39,10 +39,11 @@ resource "aws_iam_role_policy_attachment" "luit-node-AmazonEC2ContainerRegistryR
 #Worker-nodes
 
 resource "aws_eks_node_group" "wk22_node" {
-  cluster_name    = aws_eks_cluster.my_cluster.name
+  cluster_name    = aws_eks_cluster.luit_cluster.name
   node_group_name = "worker_nodes"
   node_role_arn   = aws_iam_role.project_node.arn
   subnet_ids      = var.public_subnets
+  instance_types  = var.instance_types
 
   remote_access {
     ec2_ssh_key               = var.key_pair
@@ -53,6 +54,9 @@ resource "aws_eks_node_group" "wk22_node" {
     desired_size = var.desired_size
     max_size     = var.max_size
     min_size     = var.min_size
+  }
+  tags = {
+    "kubernetes.io/cluster/${aws_eks_cluster.luit_cluster.name}" = "owned"
   }
 
   depends_on = [
