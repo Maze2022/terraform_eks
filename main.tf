@@ -18,4 +18,5 @@ module "eks" {
   min_size                = 1
   endpoint_public_access  = true
   endpoint_private_access = false
+  key_pair                = "MazeKeys"
 }
