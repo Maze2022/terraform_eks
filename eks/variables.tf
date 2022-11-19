@@ -10,6 +10,8 @@ variable "public_subnets" {}
 
 variable "key_pair" {}
 
+variable "instance_types" {}
+
 variable "desired_size" {
   type = number
 }
