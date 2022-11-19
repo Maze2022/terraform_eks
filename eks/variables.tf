@@ -8,14 +8,16 @@ variable "endpoint_private_access" {}
 
 variable "public_subnets" {}
 
+variable "key_pair" {}
+
 variable "desired_size" {
-    type = number
+  type = number
 }
 variable "max_size" {
-    type = number
+  type = number
 }
 
 variable "min_size" {
-    type = number
+  type = number
 }
 
