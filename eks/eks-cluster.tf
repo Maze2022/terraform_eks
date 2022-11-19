@@ -37,8 +37,8 @@ resource "random_string" "random_suffix" {
   special = false
 }
 
-resource "aws_eks_cluster" "my_cluster" {
-  name     = "my-cluster-${random_string.random_suffix.result}"
+resource "aws_eks_cluster" "luit_cluster" {
+  name     = "luit-cluster-${random_string.random_suffix.result}"
   role_arn = aws_iam_role.project_cluster.arn
 
   vpc_config {
