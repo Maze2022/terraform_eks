@@ -16,7 +16,7 @@ module "eks" {
   instance_types          = ["t3.small"]
   node_group_name         = "worker_nodes"
   public_access_cidrs     = ["0.0.0.0/0"]
-  desired_size            = 2
+  desired_size            = 3
   max_size                = 3
   min_size                = 1
   endpoint_public_access  = true
