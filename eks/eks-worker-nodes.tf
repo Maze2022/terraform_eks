@@ -40,7 +40,7 @@ resource "aws_iam_role_policy_attachment" "luit-node-AmazonEC2ContainerRegistryR
 
 resource "aws_eks_node_group" "wk22_node" {
   cluster_name    = aws_eks_cluster.luit_cluster.name
-  node_group_name = "worker_nodes"
+  node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.project_node.arn
   subnet_ids      = var.public_subnets
   instance_types  = var.instance_types
