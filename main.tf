@@ -4,11 +4,10 @@ module "vpc" {
   source                  = "./vpc"
   vpc_cidr                = "192.168.0.0/16"
   public_sn_count         = 2
-  access_ip               = "0.0.0.0/0"
+  access_ip               = var.access_ip
   public_cidrs            = [for i in range(1, 4, 2) : cidrsubnet("192.168.0.0/16", 8, i)]
   map_public_ip_on_launch = true
 }
-
 
 module "eks" {
   source                  = "./eks"
