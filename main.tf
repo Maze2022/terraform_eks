@@ -4,7 +4,8 @@ module "vpc" {
   source                  = "./vpc"
   vpc_cidr                = "192.168.0.0/16"
   public_sn_count         = 2
-  public_cidrs            = [for i in range(1, 3, 1) : cidrsubnet("192.168.0.0/16", 8, i)]
+  access_ip               = "0.0.0.0/0"
+  public_cidrs            = [for i in range(1, 4, 2) : cidrsubnet("192.168.0.0/16", 8, i)]
   map_public_ip_on_launch = true
 }
 
@@ -14,6 +15,8 @@ module "eks" {
   vpc_id                  = module.vpc.vpc_id
   public_subnets          = module.vpc.public_subnets
   instance_types          = ["t3.small"]
+  node_group_name         = "worker_nodes"
+  public_access_cidrs     = ["0.0.0.0/0"]
   desired_size            = 2
   max_size                = 3
   min_size                = 1
