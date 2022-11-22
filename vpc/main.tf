@@ -30,22 +30,6 @@ resource "aws_subnet" "eks_public_subnets" {
   }
 }
 
-#Route Table for Public Subnets
-resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.eks_vpc.id
-
-  tags = {
-    Name = "public_rt"
-  }
-}
-
-#Associate public subnets with routing table
-resource "aws_route_table_association" "Public_assoc" {
-  count          = var.public_sn_count
-  subnet_id      = aws_subnet.eks_public_subnets[count.index].id
-  route_table_id = aws_route_table.public_rt.id
-}
-
 #Internet gateway
 resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.eks_vpc.id
@@ -55,13 +39,21 @@ resource "aws_internet_gateway" "my_igw" {
   }
 }
 
-resource "aws_default_route_table" "default_public_rt" {
+resource "aws_default_route_table" "default_luit_public_rt" {
   default_route_table_id = aws_vpc.eks_vpc.default_route_table_id
 
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.my_igw.id
   }
+  tags = {
+    Name = "public_rt"
+  }
 }
 
-# 
+#Associate public subnets with routing table
+resource "aws_route_table_association" "Public_assoc" {
+  count          = var.public_sn_count
+  subnet_id      = aws_subnet.eks_public_subnets[count.index].id
+  route_table_id = aws_default_route_table.default_luit_public_rt.id
+}
