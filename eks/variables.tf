@@ -12,6 +12,10 @@ variable "key_pair" {}
 
 variable "instance_types" {}
 
+variable "node_group_name" {}
+
+variable "public_access_cidrs" {}
+
 variable "desired_size" {
   type = number
 }
