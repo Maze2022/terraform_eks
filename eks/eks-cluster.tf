@@ -46,6 +46,7 @@ resource "aws_eks_cluster" "luit_cluster" {
     subnet_ids              = var.public_subnets
     endpoint_public_access  = var.endpoint_public_access
     endpoint_private_access = var.endpoint_private_access
+    public_access_cidrs     = var.public_access_cidrs
   }
 
   depends_on = [
